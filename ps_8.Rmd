@@ -1,0 +1,29 @@
+---
+title: "ps_8"
+author: "Henry Zhu"
+date: "April 20, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r, message=FALSE, include=TRUE, echo=FALSE}
+library(tidyverse)
+library(sf)
+library(tigris)
+library(ggthemes)
+
+sanpablo <- read_csv(url("http://justicetechlab.org/wp-content/uploads/2018/02/eastpaloalto_sst.csv")) 
+shapes <- places("ca", class = "sf", cb= TRUE) %>%
+  filter(NAME == "San Pablo")
+
+sp_locations <- sanpablo %>%
+                              st_as_sf(coords = c("Latitude", "Longitude"), 
+                               crs = st_crs(shapes)) 
+ggplot(data = shapes) +
+  geom_sf() +
+  geom_sf(data = sp_locations) +
+  theme_map()
+
+```
