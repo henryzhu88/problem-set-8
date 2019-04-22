@@ -7,7 +7,6 @@
 #    http://shiny.rstudio.com/
 #
 
-library(shiny)
 library(tidyverse)
 library(sf)
 library(tigris)
@@ -15,11 +14,9 @@ library(ggthemes)
 library(lubridate)
 library(gganimate)
 library(janitor)
-
 brockton<- read_csv(url("http://justicetechlab.org/wp-content/uploads/2018/02/Brockton_ShotSpotterCSV.csv")) %>%
   clean_names() %>%
   filter(latitude!="NA") %>%
-  mutate(month = month(time)) %>%
   mutate(year = year(time))
 
 shapes <- places("ma", class = "sf", cb=TRUE) %>%
@@ -33,9 +30,7 @@ brockton_locations <- brockton %>%
 ui <- fluidPage(
    
    # Application title
-   titlePanel(h2("Gunfire Reports in Brockton, MA"),
-              windowTitle = "Gunfire Reports in Brockton, MA"),
-              h4("Henry Zhu"))
+   titlePanel("Gunfire Reports in Brockton, MA"),
    
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
@@ -50,23 +45,21 @@ ui <- fluidPage(
           tabPanel("Acknowledgments",
                    textOutput("text"))
         )
-         
       )
    )
+)
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
-   output$Map <- renderImage({
-     list(src="plot1.gif",
-          contentType="image/gif")
-     deleteFile = FALSE
-     }) 
-   
-   output$text <- renderText({
-     "The Justice Tech Lab provided data to this project. Much appreciation to access to this data. \nCreated by Henry Zhu. 
-      \nLink to Github:https://github.com/henryzhu88/problem-set-8" 
-   })
-}
+server <- function(input, output)  {
+  output$Map <- renderImage({
+    list(src="plot1.gif",
+         contentType="image/gif")
+  }) 
+  output$text <- renderText({
+    "The Justice Tech Lab provided data to this project. Much appreciation to access to this data. \nCreated by Henry Zhu. 
+    \nLink to Github:https://github.com/henryzhu88/problem-set-8" 
+  })
+   }
 
 # Run the application 
 shinyApp(ui = ui, server = server)
